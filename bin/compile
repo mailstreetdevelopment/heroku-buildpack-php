@@ -97,81 +97,81 @@ composer_lock_parse_error=$(
 #			https://getcomposer.org/doc/01-basic-usage.md
 #		EOF
 #	}
-	if [[ ! -f "$COMPOSER_LOCK" ]]; then
-		cat "$COMPOSER" | python -c 'import sys, json; sys.exit(bool(json.load(sys.stdin).get("require", {})))' 2> /dev/null || {
-			mcount "failures.composer_lock.missing"
-			error <<-EOF
-				No '$COMPOSER_LOCK' found!
-				
-				A '$COMPOSER_LOCK' file was not found in your project, but there
-				is a '$COMPOSER' file with dependencies inside 'require'.
-				
-				The lock file is required in order to guarantee reliable and
-				reproducible installation of dependencies across platforms and
-				deploys. You must follow the Composer best practice of having
-				your lock file under version control in order to deploy. The
-				lock file must not be in your '.gitignore'.
-				
-				Please perform the following steps locally on your computer to
-				resolve this issue before attempting another deploy:
-				1) remove '$COMPOSER_LOCK' from file '.gitignore', if present
-				2) if no '$COMPOSER_LOCK' exists, run 'composer update'
-				3) stage the lock file changes using 'git add $COMPOSER_LOCK'
-				4) if you edited '.gitignore', also run 'git add .gitignore'
-				5) commit the change using 'git commit'
-				
-				Please remember to always keep your '$COMPOSER_LOCK' updated in
-				lockstep with '$COMPOSER' to avoid common problems related
-				to dependencies during collaboration and deployment.
-				
-				Please refer to the Composer documentation for further details:
-				https://getcomposer.org/doc/
-				https://getcomposer.org/doc/01-basic-usage.md
-			EOF
-		}
-	else
-		cat "$COMPOSER_LOCK" | python -mjson.tool &> /dev/null || {
-			mcount "failures.composer_lock.lint"
-			error "$composer_lock_parse_error"
-		}
-	fi
-else
-	if [[ ! -f "$COMPOSER" ]]; then
-		mcount "warnings.composer_json.missing"
-		warning <<-EOF
-			No '$COMPOSER' found!
-			
-			Your project only contains an 'index.php', no '$COMPOSER'.
-			
-			Using 'index.php' to declare app type as PHP is deprecated and
-			may lead to unexpected behavior.
-			
-			Please consider updating your codebase to utilize Composer and
-			modern dependency management in order to benefit from the latest
-			PHP runtimes and improved application performance, as well as
-			control over the PHP versions and extensions available.
-			
-			For an introduction to dependency management with Composer and
-			how to get the most out of PHP on Heroku, refer to the docs at
-			https://getcomposer.org/doc/00-intro.md and
-			https://devcenter.heroku.com/articles/getting-started-with-php
-		EOF
-	else
-		mcount "warnings.composer_json.empty"
-		notice <<-EOF
-			Your '$COMPOSER' is completely empty!
-			
-			A completely empty file is not a valid JSON document.
-			
-			Heroku automatically corrected this problem, but it is strongly
-			recommended you change the contents to at least '{}'.
-			
-			For documentation on Composer and dependency management, check
-			out the introduction at https://getcomposer.org/doc/00-intro.md
-		EOF
-	fi
-	echo "{}" > $COMPOSER
-fi
+#	if [[ ! -f "$COMPOSER_LOCK" ]]; then
+#		cat "$COMPOSER" | python -c 'import sys, json; sys.exit(bool(json.load(sys.stdin).get("require", {})))' 2> /dev/null || {
+#			mcount "failures.composer_lock.missing"
+#			error <<-EOF
+#				No '$COMPOSER_LOCK' found!
+#
+#				A '$COMPOSER_LOCK' file was not found in your project, but there
+#				is a '$COMPOSER' file with dependencies inside 'require'.
+#
+#				The lock file is required in order to guarantee reliable and
+#				reproducible installation of dependencies across platforms and
+#				deploys. You must follow the Composer best practice of having
+#				your lock file under version control in order to deploy. The
+#				lock file must not be in your '.gitignore'.
+#
+#				Please perform the following steps locally on your computer to
+#				resolve this issue before attempting another deploy:
+#				1) remove '$COMPOSER_LOCK' from file '.gitignore', if present
+#				2) if no '$COMPOSER_LOCK' exists, run 'composer update'
+#				3) stage the lock file changes using 'git add $COMPOSER_LOCK'
+#				4) if you edited '.gitignore', also run 'git add .gitignore'
+#				5) commit the change using 'git commit'
+#
+#				Please remember to always keep your '$COMPOSER_LOCK' updated in
+#				lockstep with '$COMPOSER' to avoid common problems related
+#				to dependencies during collaboration and deployment.
+#
+#				Please refer to the Composer documentation for further details:
+#				https://getcomposer.org/doc/
+#				https://getcomposer.org/doc/01-basic-usage.md
+#			EOF
+#		}
+#	else
+#		cat "$COMPOSER_LOCK" | python -mjson.tool &> /dev/null || {
+#			mcount "failures.composer_lock.lint"
+#			error "$composer_lock_parse_error"
+#		}
+#	fi
+#else
+#	if [[ ! -f "$COMPOSER" ]]; then
+#		mcount "warnings.composer_json.missing"
+#		warning <<-EOF
+#			No '$COMPOSER' found!
+#
+#			Your project only contains an 'index.php', no '$COMPOSER'.
+#
+#			Using 'index.php' to declare app type as PHP is deprecated and
+#			may lead to unexpected behavior.
+#
+#			Please consider updating your codebase to utilize Composer and
+#			modern dependency management in order to benefit from the latest
+#			PHP runtimes and improved application performance, as well as
+#			control over the PHP versions and extensions available.
+#
+#			For an introduction to dependency management with Composer and
+#			how to get the most out of PHP on Heroku, refer to the docs at
+#			https://getcomposer.org/doc/00-intro.md and
+#			https://devcenter.heroku.com/articles/getting-started-with-php
+#		EOF
+#	else
+#		mcount "warnings.composer_json.empty"
+#		notice <<-EOF
+#			Your '$COMPOSER' is completely empty!
+#
+#			A completely empty file is not a valid JSON document.
+#
+#			Heroku automatically corrected this problem, but it is strongly
+#			recommended you change the contents to at least '{}'.
+#
+#			For documentation on Composer and dependency management, check
+#			out the introduction at https://getcomposer.org/doc/00-intro.md
+#		EOF
+#	fi
+#	echo "{}" > $COMPOSER
+#fi
 
 # PHP expects to be installed in /app/.heroku/php because of compiled paths, let's set that up!
 mkdir -p /app/.heroku
