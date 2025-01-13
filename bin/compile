@@ -83,6 +83,7 @@ composer_lock_parse_error=$(
 if [[ -s "$COMPOSER" ]]; then
   cat "$COMPOSER"
 #  python -mjson.tool
+python --version
   python3 -mjson.tool
 #	cat "$COMPOSER" | python -mjson.tool &> /dev/null || {
 #		mcount "failures.composer_json.lint"
