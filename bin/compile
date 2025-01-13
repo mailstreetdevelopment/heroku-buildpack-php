@@ -79,28 +79,24 @@ composer_lock_parse_error=$(
 )
 
 # a bunch of sanity checks first
-
 if [[ -s "$COMPOSER" ]]; then
-  cat "$COMPOSER"
-#  python -mjson.tool
-python3 --version
-#	cat "$COMPOSER" | python -mjson.tool &> /dev/null || {
-#		mcount "failures.composer_json.lint"
-#		error <<-EOF
-#			Basic validation for '$COMPOSER' failed!
-#
-#			It must be a valid JSON document compatible with Composer.
-#
-#			You most likely created or edited the file by hand, and it now
-#			contains a syntax error. Please refer to the documentation at
-#			https://getcomposer.org/doc/ for information on the format.
-#
-#			You can run 'composer validate' locally on your computer for
-#			further diagnosis. Remember to also always keep your lock file
-#			up to date with any changes according to the instructions at
-#			https://getcomposer.org/doc/01-basic-usage.md
-#		EOF
-#	}
+	cat "$COMPOSER" | python -mjson.tool &> /dev/null || {
+		mcount "failures.composer_json.lint"
+		error <<-EOF
+			Basic validation for '$COMPOSER' failed!
+
+			It must be a valid JSON document compatible with Composer.
+
+			You most likely created or edited the file by hand, and it now
+			contains a syntax error. Please refer to the documentation at
+			https://getcomposer.org/doc/ for information on the format.
+
+			You can run 'composer validate' locally on your computer for
+			further diagnosis. Remember to also always keep your lock file
+			up to date with any changes according to the instructions at
+			https://getcomposer.org/doc/01-basic-usage.md
+		EOF
+	}
 	if [[ ! -f "$COMPOSER_LOCK" ]]; then
 		cat "$COMPOSER" | python -c 'import sys, json; sys.exit(bool(json.load(sys.stdin).get("require", {})))' 2> /dev/null || {
 			mcount "failures.composer_lock.missing"
